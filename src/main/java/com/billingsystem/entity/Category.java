@@ -24,4 +24,8 @@ public class Category {
     @OneToMany(mappedBy = "category")
     List<Product> products;
 
+    public Category(String name) {
+        this.name = name;
+    }
+
 }

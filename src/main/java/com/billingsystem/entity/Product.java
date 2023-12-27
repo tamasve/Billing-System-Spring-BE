@@ -22,6 +22,9 @@ public class Product {
     String name;
 
     @Column(nullable = false)
+    String unit;
+
+    @Column(nullable = false)
     double price;
 
     @ManyToOne
@@ -31,4 +34,10 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<Order> orders;
 
+    public Product(String name, String unit, double price, Category category) {
+        this.name = name;
+        this.unit = unit;
+        this.price = price;
+        this.category = category;
+    }
 }
