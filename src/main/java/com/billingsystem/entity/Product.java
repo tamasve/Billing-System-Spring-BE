@@ -34,7 +34,7 @@ public class Product {
 
     @JsonBackReference
     @OneToMany(mappedBy = "product")
-    List<Order> orders;
+    List<OrderItem> orderItems;
 
     public Product(String name, String unit, double price, Category category) {
         this.name = name;

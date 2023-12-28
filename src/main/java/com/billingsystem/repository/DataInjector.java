@@ -1,8 +1,6 @@
 package com.billingsystem.repository;
 
-import com.billingsystem.entity.Category;
-import com.billingsystem.entity.Customer;
-import com.billingsystem.entity.Product;
+import com.billingsystem.entity.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -25,13 +23,19 @@ public class DataInjector implements CommandLineRunner {
 	private CategoryRepository categoryRepository;
 	private ProductRepository productRepository;
 	private CustomerRepository customerRepository;
+	private OrderRepository orderRepository;
+	private OrderItemRepository orderItemRepository;
 	@Autowired
 	public DataInjector(CategoryRepository categoryRepository,
 						ProductRepository productRepository,
-						CustomerRepository customerRepository) {
+						CustomerRepository customerRepository,
+						OrderRepository orderRepository,
+						OrderItemRepository orderItemRepository) {
 		this.categoryRepository = categoryRepository;
 		this.productRepository = productRepository;
 		this.customerRepository = customerRepository;
+		this.orderRepository = orderRepository;
+		this.orderItemRepository = orderItemRepository;
 	}
 
 
@@ -80,7 +84,7 @@ public class DataInjector implements CommandLineRunner {
 									categoryRepository.findById( id ).orElseThrow()
 									));
 					} catch (Exception e) {
-						log.error("Inserting row " + String.valueOf(row.getRowNum()) + " into DB failed");
+						log.error("Inserting row " + row.getRowNum() + " into DB failed");
 					}
 				}
 			}
@@ -107,9 +111,66 @@ public class DataInjector implements CommandLineRunner {
 				}
 			}
 		}
+
+		log.info("CommandLineRunner -- Orders... >>");
+
+		if (orderRepository.findAll().isEmpty()) {
+			String fileLocation = "orders.xlsx";
+
+			Workbook workbook = new XSSFWorkbook(new FileInputStream(fileLocation));
+			Sheet sheet = workbook.getSheet("orders");
+
+			for (Row row : sheet) {
+//				log.info(">> data row of " + row.getCell(0).getStringCellValue());
+				if (row.getRowNum() != 0) {
+					Long id = Double.valueOf( row.getCell(1).getNumericCellValue() ).longValue();
+					log.info(">> id: " + id.toString());
+					try {
+						orderRepository.save(
+								new Order(
+										row.getCell(0).getDateCellValue(),
+										customerRepository.findById( id ).orElseThrow()
+								));
+					} catch (Exception e) {
+						log.error("Inserting row " + row.getRowNum() + " into DB failed");
+					}
+				}
+			}
+		}
+
+		log.info("CommandLineRunner -- Order items... >>");
+
+		if (orderItemRepository.findAll().isEmpty()) {
+			String fileLocation = "order-items.xlsx";
+
+			Workbook workbook = new XSSFWorkbook(new FileInputStream(fileLocation));
+			Sheet sheet = workbook.getSheet("order-items");
+
+			for (Row row : sheet) {
+//				log.info(">> data row of " + row.getCell(0).getStringCellValue());
+				if (row.getRowNum() != 0) {
+					Long order_id = Double.valueOf( row.getCell(0).getNumericCellValue() ).longValue();
+					Long prod_id = Double.valueOf( row.getCell(1).getNumericCellValue() ).longValue();
+					log.info(">> id: " + order_id);
+					try {
+						orderItemRepository.save(
+								new OrderItem(
+										orderRepository.findById( order_id ).orElseThrow(),
+										productRepository.findById( prod_id ).orElseThrow(),
+										row.getCell(2).getNumericCellValue()
+								));
+					} catch (Exception e) {
+						log.error("Inserting row " + row.getRowNum() + " into DB failed");
+					}
+				}
+			}
+		}
 		
-		
-//		// The mere printing of Excel data - as a TEST of it working well
+		log.info("CommandLineRunner -- Data Injector ends <<");
+
+
+//		// The mere printing of Excel data - as a TEST that it is working well
+
 //		for (Row row : sheet) {
 //			if (row.getRowNum() == 0) {
 //				log.info("-- Header --");
@@ -123,8 +184,7 @@ public class DataInjector implements CommandLineRunner {
 //				}
 //			}
 //		}
-		
-		log.info("CommandLineRunner -- Data Injector ends <<");
+
 	}
 
 }

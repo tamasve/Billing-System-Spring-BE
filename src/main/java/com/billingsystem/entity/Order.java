@@ -1,11 +1,14 @@
 package com.billingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,17 +22,18 @@ public class Order {
     Long id;
 
     @Column(nullable = false)
-    LocalDateTime date;
+    Date date;
 
     @ManyToOne
     @JoinColumn(name = "cust_id", nullable = false)
     Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "prod_id", nullable = false)
-    Product product;
+    @JsonBackReference
+    @OneToMany(mappedBy = "order")
+    List<OrderItem> items;
 
-    @Column(nullable = false)
-    double unit;
-
+    public Order(Date date, Customer customer) {
+        this.date = date;
+        this.customer = customer;
+    }
 }
