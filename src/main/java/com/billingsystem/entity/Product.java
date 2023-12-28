@@ -1,5 +1,6 @@
 package com.billingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,6 +32,7 @@ public class Product {
     @JoinColumn(name = "cat_id", nullable = false)
     Category category;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "product")
     List<Order> orders;
 

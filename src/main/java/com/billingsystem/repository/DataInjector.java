@@ -1,6 +1,7 @@
 package com.billingsystem.repository;
 
 import com.billingsystem.entity.Category;
+import com.billingsystem.entity.Customer;
 import com.billingsystem.entity.Product;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
 import java.io.FileInputStream;
 
 // == DATA LOADER TO DB FROM EXCEL FILES ==
@@ -24,11 +24,14 @@ public class DataInjector implements CommandLineRunner {
 	
 	private CategoryRepository categoryRepository;
 	private ProductRepository productRepository;
+	private CustomerRepository customerRepository;
 	@Autowired
 	public DataInjector(CategoryRepository categoryRepository,
-								   ProductRepository productRepository) {
+						ProductRepository productRepository,
+						CustomerRepository customerRepository) {
 		this.categoryRepository = categoryRepository;
 		this.productRepository = productRepository;
+		this.customerRepository = customerRepository;
 	}
 
 
@@ -79,6 +82,28 @@ public class DataInjector implements CommandLineRunner {
 					} catch (Exception e) {
 						log.error("Inserting row " + String.valueOf(row.getRowNum()) + " into DB failed");
 					}
+				}
+			}
+		}
+
+		log.info("CommandLineRunner -- Customers... >>");
+
+		if (customerRepository.findAll().isEmpty()) {
+			String fileLocation = "customers.xlsx";
+
+			Workbook workbook = new XSSFWorkbook(new FileInputStream(fileLocation));
+			Sheet sheet = workbook.getSheet("customers");
+
+			for (Row row : sheet) {
+				log.info(">> data row of " + row.getCell(0).getStringCellValue());
+				if (row.getRowNum() != 0) {
+					customerRepository.save(
+							new Customer(
+									row.getCell(0).getStringCellValue(),
+									row.getCell(1).getStringCellValue(),
+									row.getCell(2).getStringCellValue()
+							)
+					);
 				}
 			}
 		}

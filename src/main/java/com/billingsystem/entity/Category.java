@@ -1,5 +1,6 @@
 package com.billingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Category {
     @Column(nullable = false)
     String name;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "category")
     List<Product> products;
 

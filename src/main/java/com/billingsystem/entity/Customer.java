@@ -1,5 +1,6 @@
 package com.billingsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +28,13 @@ public class Customer {
     @Column(nullable = false)
     String mobile;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "customer")
     List<Order> orders;
 
+    public Customer(String name, String email, String mobile) {
+        this.name = name;
+        this.email = email;
+        this.mobile = mobile;
+    }
 }
