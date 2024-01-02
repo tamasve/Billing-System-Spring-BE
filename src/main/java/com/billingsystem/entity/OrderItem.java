@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class OrderItem {
 
     @Id
+    @Column(name = "oi_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 

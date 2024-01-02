@@ -12,7 +12,7 @@ public interface OrderItemRepository extends ListCrudRepository<OrderItem, Long>
 
 //    @Query(value = "select i.order_id, p.name, p.price, i.unit" +
 //            "from order_items i, products p" +
-//            "where i.prod_id = p.id" +
+//            "where i.prod_id = p.prod_id" +
 //            "and i.order_id = 1", nativeQuery = true)
 
 //    @Query(value = "select prod_id from order_items", nativeQuery = true)
@@ -22,8 +22,8 @@ public interface OrderItemRepository extends ListCrudRepository<OrderItem, Long>
 //    @Query(value = "select o from OrderItem o where o.id=2")    // works
 
     // How to create a query that uses multiple table from DB?: using a DTO class (Data Transfer Object)
-    // + JPQL is much easier to use in this situation...
-    @Query(value = "select new com.billingsystem.entity.OrderDTO(oi.id, oi.order.date, oi.order.customer.name,"+
-            " oi.product.name, oi.product.price, oi.unit) from OrderItem oi where oi.id = ?1")    // works
+    // + JPQL is much easier to use in this situation than a native SQL query...
+    @Query(value = "SELECT new com.billingsystem.entity.OrderDTO( oi.id, oi.order.date, oi.order.customer.name,"+
+            " oi.product.name, oi.product.price, oi.unit) FROM OrderItem oi WHERE oi.id = ?1 ")    // works
     public List<OrderDTO> findAllByOrderId(Long id);
 }

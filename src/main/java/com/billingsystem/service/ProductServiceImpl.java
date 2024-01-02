@@ -1,6 +1,7 @@
 package com.billingsystem.service;
 
 import com.billingsystem.entity.Product;
+import com.billingsystem.entity.ProductDTO;
 import com.billingsystem.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,10 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
+    }
+
+    @Override
+    public List<ProductDTO> findAllWithCatName() {
+        return productRepository.findAllWithCatName();
     }
 }

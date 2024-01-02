@@ -9,13 +9,12 @@ import java.util.Date;
 
 @Data
 @AllArgsConstructor
-public class OrderDTO {
+public class ProductDTO {
 
-    private Long order_id;
-    private Date date;
-    private String cust_name;
-    private String prod_name;
+    private Long product_id;
+    private String name;
+    private String category;
+    private String unit;
     private double price;
-    private double unit;
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 public class Customer {
 
     @Id
+    @Column(name = "cust_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 

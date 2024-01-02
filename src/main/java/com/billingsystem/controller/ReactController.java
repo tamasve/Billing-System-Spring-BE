@@ -3,13 +3,11 @@ package com.billingsystem.controller;
 import com.billingsystem.entity.*;
 import com.billingsystem.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 public class ReactController {
 
@@ -40,8 +38,8 @@ public class ReactController {
     }
 
     @GetMapping("/products")
-    public List<Product> products() {
-        return productService.findAll();
+    public List<ProductDTO> products() {
+        return productService.findAllWithCatName();
     }
 
     @GetMapping("/customers")
